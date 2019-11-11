@@ -1,4 +1,4 @@
-package main
+package calendar
 
 import (
 	"encoding/json"
@@ -70,7 +70,8 @@ func saveToken(path string, token *oauth2.Token) {
 	json.NewEncoder(f).Encode(token)
 }
 
-func getBusyStatus() {
+// GetBusyStatus does things
+func GetBusyStatus() string {
 	b, err := ioutil.ReadFile("credentials.json")
 	if err != nil {
 		log.Fatalf("Unable to read client secret file: %v", err)
@@ -96,16 +97,15 @@ func getBusyStatus() {
 	if err != nil {
 		log.Fatalf("Unable to retrieve next ten of the user's events: %v", err)
 	}
-	fmt.Println("Upcoming events:")
 	if len(events.Items) == 0 {
-		fmt.Println("No upcoming events found.")
-	} else {
-		for _, item := range events.Items {
-			date := item.Start.DateTime
-			if date == "" {
-				date = item.Start.Date
-			}
-			fmt.Printf("%v (%v)\n", item.Summary, date)
-		}
+		return "No upcoming events found."
 	}
+	for _, item := range events.Items {
+		date := item.Start.DateTime
+		// if time.Parse("2006-01-02", date) < t.Add(time.Duration(-5)*time.Minute) {
+		// 	date = item.Start.Date
+		// }
+		return fmt.Sprintf("%v (%v)\n", item.Summary, date)
+	}
+	return "ahhhh"
 }
